@@ -1,0 +1,34 @@
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  serviceName: blog-service
+  image: blog-service:latest
+  replicas: 1
+  port: 3002
+  serviceType: ClusterIP
+  
+  # PostgreSQL configuration
+  postgres:
+    enabled: true
+    database: blog
+    user: blogservice
+    passwordSecret: blog-postgres-secret
+  
+  # Kafka configuration
+  kafka:
+    enabled: true
+    brokers:
+      - "my-cluster-kafka-bootstrap.kafka:9092"
+    consumerGroup: "blog-service-group"
+    topics:
+      consume:
+        - "user.events"
+      produce:
+        - "blog.events"
+  
+  # Health check
+  healthCheck:
+    path: /api/v1/health
+    port: 3002

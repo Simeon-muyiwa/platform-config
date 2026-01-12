@@ -1,0 +1,78 @@
+apiVersion: apps.example.com/v1alpha1
+kind: KafkaCluster
+metadata:
+  name: platform-kafka
+  namespace: kafka
+spec:
+  clusterName: my-cluster
+  namespace: kafka
+  
+  # Kafka version (Strimzi 0.38+ / Kafka 4.0)
+  version: "4.0.0"
+  
+  # Replicas (1 for dev, 3+ for production)
+  replicas: 1
+  
+  # Storage configuration
+  storage:
+    type: ephemeral  # Use 'persistent-claim' for production
+    size: 10Gi
+    storageClass: ""
+  
+  # Listener configuration
+  listeners:
+    - name: plain
+      port: 9092
+      type: internal
+      tls: false
+    - name: tls
+      port: 9093
+      type: internal
+      tls: true
+  
+  # KRaft mode (no ZooKeeper)
+  kraft:
+    enabled: true
+  
+  # Platform topics
+  topics:
+    - name: identity.events
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "604800000"  # 7 days
+    - name: user.events
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "604800000"
+    - name: blog.events
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "604800000"
+    - name: platform-dlq
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "2592000000"  # 30 days
+    # CI/CD topics (for GitOps Coordinator)
+    - name: cicd.deployment-events
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "2592000000"
+    - name: cicd.deployment-status
+      partitions: 3
+      replicas: 1
+      config:
+        retention.ms: "2592000000"
+  
+  # Resource limits
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"

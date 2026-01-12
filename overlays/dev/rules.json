@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "environment": "dev",
+  "deployment": {
+    "identity-service": {
+      "syncWave": 0,
+      "dependencies": ["postgres", "redis", "kafka"],
+      "healthCheck": {
+        "endpoint": "/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 5
+      },
+      "rollout": {
+        "strategy": "recreate",
+        "maxSurge": "100%",
+        "maxUnavailable": "100%"
+      },
+      "rollback": {
+        "automatic": false,
+        "onHealthFailure": false,
+        "historyLimit": 3
+      }
+    },
+    "user-service": {
+      "syncWave": 1,
+      "dependencies": ["postgres", "kafka", "identity-service"],
+      "healthCheck": {
+        "endpoint": "/profiles/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 5
+      }
+    },
+    "blog-service": {
+      "syncWave": 1,
+      "dependencies": ["postgres", "kafka"],
+      "healthCheck": {
+        "endpoint": "/api/v1/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 5
+      }
+    },
+    "frontend": {
+      "syncWave": 2,
+      "dependencies": ["identity-service", "user-service"],
+      "healthCheck": {
+        "endpoint": "/",
+        "timeout": "5s",
+        "interval": "30s",
+        "failureThreshold": 5
+      }
+    }
+  },
+  "scaling": {
+    "identity-service": {
+      "minReplicas": 1,
+      "maxReplicas": 1,
+      "targetCPU": 80
+    },
+    "user-service": {
+      "minReplicas": 1,
+      "maxReplicas": 1,
+      "targetCPU": 80
+    }
+  },
+  "kafka": {
+    "topics": {
+      "identity.events": { "partitions": 1, "retention": "1d" },
+      "user.events": { "partitions": 1, "retention": "1d" },
+      "blog.events": { "partitions": 1, "retention": "1d" },
+      "platform-dlq": { "partitions": 1, "retention": "7d" }
+    }
+  },
+  "eventHandlers": {
+    "onDeploymentStart": ["logEvent"],
+    "onDeploymentSuccess": ["logEvent"],
+    "onDeploymentFailure": ["logEvent"]
+  },
+  "debug": {
+    "enabled": true,
+    "verboseLogging": true
+  }
+}

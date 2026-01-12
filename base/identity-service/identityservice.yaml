@@ -1,0 +1,41 @@
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  serviceName: identity-service
+  image: identity-service:latest
+  replicas: 1
+  port: 3000
+  serviceType: ClusterIP
+  
+  # PostgreSQL configuration
+  postgres:
+    enabled: true
+    database: identity
+    user: identity
+    passwordSecret: identity-postgres-secret
+  
+  # Redis configuration
+  redis:
+    enabled: true
+    port: 6379
+  
+  # Kafka configuration
+  kafka:
+    enabled: true
+    brokers:
+      - "my-cluster-kafka-bootstrap.kafka:9092"
+    topics:
+      - "identity.events"
+  
+  # JWT configuration
+  jwt:
+    secret: "platform-jwt-secret"
+    expiresIn: "15m"
+    refreshExpiresIn: "7d"
+  
+  # Health check
+  healthCheck:
+    path: /health
+    port: 3000

@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+  - ../../base/identity-service
+  - ../../base/user-service
+  - ../../base/blog-service
+  - ../../base/frontend
+
+# Development images (local or minikube registry)
+images:
+  - name: identity-service
+    newName: identity-service
+    newTag: latest
+  - name: user-service
+    newName: user-service
+    newTag: latest
+  - name: blog-service
+    newName: blog-service
+    newTag: latest
+  - name: frontend
+    newName: frontend
+    newTag: latest
+
+# Development patches
+patches:
+  - path: patches/replicas.yaml
+  - path: patches/resources.yaml
+
+# ConfigMap for development rules
+configMapGenerator:
+  - name: platform-rules
+    files:
+      - rules.json
+    options:
+      disableNameSuffixHash: true
+
+commonLabels:
+  environment: dev

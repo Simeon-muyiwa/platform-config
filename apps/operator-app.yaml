@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: webapp-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_ORG/platform-config.git
+    targetRevision: main
+    path: base/operator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform-system
+  syncPolicy:
+    automated:
+      prune: false  # Don't delete operator accidentally
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m

@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+  - ../../base/identity-service
+  - ../../base/user-service
+  - ../../base/blog-service
+  - ../../base/frontend
+
+# Staging images from ECR (GitOps Coordinator updates these)
+images:
+  - name: identity-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/identity-service
+    newTag: staging-latest
+  - name: user-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/user-service
+    newTag: staging-latest
+  - name: blog-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/blog-service
+    newTag: staging-latest
+  - name: frontend
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/frontend
+    newTag: staging-latest
+
+# Staging patches
+patches:
+  - path: patches/replicas.yaml
+  - path: patches/resources.yaml
+
+# ConfigMap for staging rules
+configMapGenerator:
+  - name: platform-rules
+    files:
+      - rules.json
+    options:
+      disableNameSuffixHash: true
+
+commonLabels:
+  environment: staging

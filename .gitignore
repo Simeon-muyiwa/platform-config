@@ -1,0 +1,21 @@
+# Local files
+.env
+*.local
+secrets/
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp/
+*.tmp
+
+# Kustomize build output
+/build/

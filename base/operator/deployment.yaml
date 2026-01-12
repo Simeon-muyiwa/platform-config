@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-operator-controller-manager
+  namespace: platform-system
+  labels:
+    app.kubernetes.io/name: webapp-operator
+    control-plane: controller-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      serviceAccountName: webapp-operator-controller-manager
+      containers:
+        - name: manager
+          image: webapp-operator:v1.0.8
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: WATCH_NAMESPACE
+              value: ""
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "webapp-operator"
+            - name: ANSIBLE_GATHERING
+              value: explicit
+          resources:
+            limits:
+              cpu: 500m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 6789
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 6789
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      terminationGracePeriodSeconds: 10

@@ -1,0 +1,112 @@
+{
+  "version": "1.0.0",
+  "environment": "staging",
+  "deployment": {
+    "identity-service": {
+      "syncWave": 0,
+      "dependencies": ["postgres", "redis", "kafka"],
+      "healthCheck": {
+        "endpoint": "/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 3
+      },
+      "rollout": {
+        "strategy": "rolling",
+        "maxSurge": "50%",
+        "maxUnavailable": "0%"
+      },
+      "rollback": {
+        "automatic": true,
+        "onHealthFailure": true,
+        "historyLimit": 5
+      }
+    },
+    "user-service": {
+      "syncWave": 1,
+      "dependencies": ["postgres", "kafka", "identity-service"],
+      "healthCheck": {
+        "endpoint": "/profiles/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 3
+      },
+      "rollout": {
+        "strategy": "rolling",
+        "maxSurge": "50%",
+        "maxUnavailable": "0%"
+      },
+      "rollback": {
+        "automatic": true,
+        "onHealthFailure": true,
+        "historyLimit": 5
+      }
+    },
+    "blog-service": {
+      "syncWave": 1,
+      "dependencies": ["postgres", "kafka"],
+      "healthCheck": {
+        "endpoint": "/api/v1/health",
+        "timeout": "10s",
+        "interval": "30s",
+        "failureThreshold": 3
+      },
+      "rollout": {
+        "strategy": "rolling",
+        "maxSurge": "50%",
+        "maxUnavailable": "0%"
+      },
+      "rollback": {
+        "automatic": true,
+        "onHealthFailure": true,
+        "historyLimit": 5
+      }
+    },
+    "frontend": {
+      "syncWave": 2,
+      "dependencies": ["identity-service", "user-service"],
+      "healthCheck": {
+        "endpoint": "/",
+        "timeout": "5s",
+        "interval": "30s",
+        "failureThreshold": 3
+      }
+    }
+  },
+  "scaling": {
+    "identity-service": {
+      "minReplicas": 2,
+      "maxReplicas": 4,
+      "targetCPU": 70
+    },
+    "user-service": {
+      "minReplicas": 2,
+      "maxReplicas": 4,
+      "targetCPU": 70
+    },
+    "blog-service": {
+      "minReplicas": 2,
+      "maxReplicas": 4,
+      "targetCPU": 70
+    }
+  },
+  "kafka": {
+    "topics": {
+      "identity.events": { "partitions": 3, "retention": "3d" },
+      "user.events": { "partitions": 3, "retention": "3d" },
+      "blog.events": { "partitions": 3, "retention": "3d" },
+      "cicd.deployment-events": { "partitions": 3, "retention": "14d" },
+      "cicd.deployment-status": { "partitions": 3, "retention": "14d" },
+      "platform-dlq": { "partitions": 3, "retention": "14d" }
+    }
+  },
+  "eventHandlers": {
+    "onDeploymentStart": ["notifySlack", "logEvent"],
+    "onDeploymentSuccess": ["notifySlack", "logEvent"],
+    "onDeploymentFailure": ["notifySlack", "logEvent", "triggerRollback"]
+  },
+  "debug": {
+    "enabled": true,
+    "verboseLogging": false
+  }
+}

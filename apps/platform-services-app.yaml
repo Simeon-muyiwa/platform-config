@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform-services
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_ORG/platform-config.git
+    targetRevision: main
+    # Path changes based on environment
+    # For prod: overlays/prod
+    # For staging: overlays/staging
+    path: overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: false  # Safety: don't auto-delete services
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  # Sync order based on sync-wave annotations in CRs
+  # Identity (wave 0) -> User/Blog (wave 1) -> Frontend (wave 2)

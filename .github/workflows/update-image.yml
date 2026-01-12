@@ -1,0 +1,105 @@
+# Update image tags in platform-config after successful build
+# This workflow is triggered by CI in service repos via repository_dispatch
+# or can be called as a reusable workflow
+
+name: Update Image Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      service_name:
+        required: true
+        type: string
+        description: "Service to update (e.g., identity-service)"
+      image_tag:
+        required: true
+        type: string
+        description: "New image tag (e.g., v1.0.5)"
+      environment:
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+        description: "Target environment"
+
+  repository_dispatch:
+    types: [update-image]
+
+jobs:
+  update-config:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout platform-config
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Parse event payload
+        id: parse
+        run: |
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            SERVICE_NAME="${{ github.event.client_payload.service_name }}"
+            IMAGE_TAG="${{ github.event.client_payload.image_tag }}"
+            ENVIRONMENT="${{ github.event.client_payload.environment }}"
+          else
+            SERVICE_NAME="${{ inputs.service_name }}"
+            IMAGE_TAG="${{ inputs.image_tag }}"
+            ENVIRONMENT="${{ inputs.environment }}"
+          fi
+          
+          echo "service_name=${SERVICE_NAME}" >> $GITHUB_OUTPUT
+          echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+          echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+          
+          echo "Updating ${SERVICE_NAME} to ${IMAGE_TAG} in ${ENVIRONMENT}"
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update kustomization.yaml
+        run: |
+          cd overlays/${{ steps.parse.outputs.environment }}
+          
+          # Use cluster-prefixed ECR registry from repository variables
+          ECR_IMAGE="${{ vars.ECR_REGISTRY }}/${{ vars.CLUSTER_NAME }}/${{ steps.parse.outputs.service_name }}"
+          
+          # Use kustomize edit to update image tag
+          kustomize edit set image \
+            ${{ steps.parse.outputs.service_name }}=${ECR_IMAGE}:${{ steps.parse.outputs.image_tag }}
+          
+          echo "Updated kustomization.yaml:"
+          cat kustomization.yaml
+
+      - name: Validate updated manifests
+        run: |
+          kustomize build overlays/${{ steps.parse.outputs.environment }} > /dev/null
+          echo "✅ Kustomize build successful"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add overlays/${{ steps.parse.outputs.environment }}/kustomization.yaml
+          
+          COMMIT_MSG="deploy(${{ steps.parse.outputs.service_name }}): Update to ${{ steps.parse.outputs.image_tag }} in ${{ steps.parse.outputs.environment }}"
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "${COMMIT_MSG}"
+            git push
+            echo "✅ Changes pushed"
+          fi
+
+      - name: Notify Argo CD (optional)
+        if: success()
+        run: |
+          # If you have Argo CD webhook configured, trigger sync here
+          echo "Argo CD will auto-sync based on Git changes"
+          # curl -X POST "https://argocd.example.com/api/v1/applications/${{ steps.parse.outputs.service_name }}/sync" \
+          #   -H "Authorization: Bearer ${{ secrets.ARGOCD_TOKEN }}"

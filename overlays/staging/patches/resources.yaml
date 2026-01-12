@@ -1,0 +1,52 @@
+# Staging: Moderate resources
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UserService
+metadata:
+  name: user-service
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: Frontend
+metadata:
+  name: auth-frontend
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

@@ -1,0 +1,28 @@
+# Production: High availability replicas
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  replicas: 3
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UserService
+metadata:
+  name: user-service
+spec:
+  replicas: 3
+---
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  replicas: 2
+---
+apiVersion: apps.example.com/v1alpha1
+kind: Frontend
+metadata:
+  name: auth-frontend
+spec:
+  replicas: 3

@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+  - ../../base/identity-service
+  - ../../base/user-service
+  - ../../base/blog-service
+  - ../../base/frontend
+
+# Production images from ECR (GitOps Coordinator updates these)
+# IMPORTANT: Only GitOps Coordinator modifies these tags
+images:
+  - name: identity-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/identity-service
+    newTag: v1.0.0
+  - name: user-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/user-service
+    newTag: v1.0.0
+  - name: blog-service
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/blog-service
+    newTag: v1.0.0
+  - name: frontend
+    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/frontend
+    newTag: v1.0.0
+
+# Production patches
+patches:
+  - path: patches/replicas-ha.yaml
+  - path: patches/resources-prod.yaml
+
+# ConfigMap for production rules
+configMapGenerator:
+  - name: platform-rules
+    files:
+      - rules.json
+    options:
+      disableNameSuffixHash: true
+
+commonLabels:
+  environment: prod

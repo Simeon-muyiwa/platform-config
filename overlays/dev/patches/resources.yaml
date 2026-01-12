@@ -1,0 +1,52 @@
+# Development: Minimal resources
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UserService
+metadata:
+  name: user-service
+spec:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: Frontend
+metadata:
+  name: auth-frontend
+spec:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"

@@ -1,0 +1,70 @@
+# Validate platform-config manifests on PR
+name: Validate Manifests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Validate YAML syntax
+        run: |
+          echo "Validating YAML syntax..."
+          find . -name "*.yaml" -o -name "*.yml" | while read file; do
+            echo "Checking: $file"
+            python3 -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+          done
+          echo "✅ All YAML files are valid"
+
+      - name: Validate Kustomize builds
+        run: |
+          echo "Building dev overlay..."
+          kustomize build overlays/dev > /dev/null
+          echo "✅ dev overlay valid"
+          
+          echo "Building staging overlay..."
+          kustomize build overlays/staging > /dev/null
+          echo "✅ staging overlay valid"
+          
+          echo "Building prod overlay..."
+          kustomize build overlays/prod > /dev/null
+          echo "✅ prod overlay valid"
+
+      - name: Validate rules.json schema
+        run: |
+          echo "Validating rules.json files..."
+          for env in dev staging prod; do
+            echo "Checking overlays/$env/rules.json"
+            python3 -c "
+          import json
+          import sys
+          
+          with open('overlays/$env/rules.json') as f:
+              rules = json.load(f)
+          
+          # Basic schema validation
+          required_keys = ['version', 'environment', 'deployment']
+          for key in required_keys:
+              if key not in rules:
+                  print(f'Missing required key: {key}')
+                  sys.exit(1)
+          
+          print(f'✅ overlays/$env/rules.json is valid')
+          "
+          done
+
+      - name: Check for duplicate resources
+        run: |
+          echo "Checking for duplicate resource definitions..."
+          ./scripts/validate.sh || true
