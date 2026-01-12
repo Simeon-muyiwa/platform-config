@@ -13,16 +13,16 @@ resources:
 # IMPORTANT: Only GitOps Coordinator modifies these tags
 images:
   - name: identity-service
-    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/identity-service
+    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service
     newTag: v1.0.0
   - name: user-service
-    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/user-service
+    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service
     newTag: v1.0.0
   - name: blog-service
-    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/blog-service
+    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service
     newTag: v1.0.0
   - name: frontend
-    newName: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/frontend
+    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend
     newTag: v1.0.0
 
 # Production patches
