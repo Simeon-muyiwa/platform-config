@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_ORG/platform-config.git
+    repoURL: https://github.com/Simeon-muyiwa/platform-config.git
     targetRevision: main
     # Path changes based on environment
     # For prod: overlays/prod
