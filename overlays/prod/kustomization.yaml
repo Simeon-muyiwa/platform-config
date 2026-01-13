@@ -9,20 +9,20 @@ resources:
   - ../../base/blog-service
   - ../../base/frontend
 
-# Production images from ECR (GitOps Coordinator updates these)
-# IMPORTANT: Only GitOps Coordinator modifies these tags
+# Production images - using local images for air-gapped cluster
+# For ECR deployment, use: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/<service>
 images:
   - name: identity-service
-    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service
+    newName: healthxcape/identity-service
     newTag: v1.0.0
   - name: user-service
-    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service
+    newName: healthxcape/user-service
     newTag: v1.0.0
   - name: blog-service
-    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service
+    newName: healthxcape/blog-service
     newTag: v1.0.0
   - name: frontend
-    newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend
+    newName: healthxcape/frontend
     newTag: v1.0.0
 
 # Production patches
