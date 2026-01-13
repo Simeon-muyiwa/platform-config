@@ -11,18 +11,18 @@ resources:
 
 # Development images (local or minikube registry)
 images:
-  - name: identity-service
-    newName: identity-service
-    newTag: latest
-  - name: user-service
-    newName: user-service
-    newTag: latest
-  - name: blog-service
-    newName: blog-service
-    newTag: latest
-  - name: frontend
-    newName: frontend
-    newTag: latest
+  - name: healthxcape/identity-service
+    newName: healthxcape/identity-service
+    newTag: v1.0.0
+  - name: healthxcape/user-service
+    newName: healthxcape/user-service
+    newTag: v1.0.0
+  - name: healthxcape/blog-service
+    newName: healthxcape/blog-service
+    newTag: v1.0.0
+  - name: healthxcape/frontend
+    newName: healthxcape/frontend
+    newTag: v1.0.1
 
 # Development patches
 patches:
