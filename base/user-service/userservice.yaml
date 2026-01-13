@@ -4,7 +4,7 @@ metadata:
   name: user-service
 spec:
   serviceName: user-service
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:latest
+  image: healthxcape/user-service:v1.0.0
   replicas: 1
   port: 3001
   serviceType: ClusterIP

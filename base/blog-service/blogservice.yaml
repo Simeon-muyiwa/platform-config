@@ -4,7 +4,7 @@ metadata:
   name: blog-service
 spec:
   serviceName: blog-service
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:latest
+  image: healthxcape/blog-service:v1.0.0
   replicas: 1
   port: 3002
   serviceType: ClusterIP
