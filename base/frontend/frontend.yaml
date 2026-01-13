@@ -4,7 +4,7 @@ metadata:
   name: auth-frontend
 spec:
   serviceName: auth-frontend
-  image: healthxcape/frontend:v1.0.0
+  image: healthxcape/frontend:v1.0.1
   replicas: 1
   port: 3000
   serviceType: ClusterIP
