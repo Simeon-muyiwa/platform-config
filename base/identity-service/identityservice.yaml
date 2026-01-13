@@ -27,7 +27,8 @@ spec:
     brokers:
       - "my-cluster-kafka-bootstrap.kafka:9092"
     topics:
-      - "identity.events"
+      identityEvents: "identity.events"
+      userEvents: "user.events"
   
   # JWT configuration
   jwt:

@@ -21,12 +21,10 @@ spec:
     enabled: true
     brokers:
       - "my-cluster-kafka-bootstrap.kafka:9092"
-    consumerGroup: "blog-service-group"
+    consumerGroupId: "blog-service-group"
     topics:
-      consume:
-        - "user.events"
-      produce:
-        - "blog.events"
+      blogEvents: "blog.events"
+      userEvents: "user.events"
   
   # Health check
   healthCheck:
