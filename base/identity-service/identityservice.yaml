@@ -25,7 +25,7 @@ spec:
   kafka:
     enabled: true
     brokers:
-      - "my-cluster-kafka-bootstrap.kafka:9092"
+      - "platform-kafka-kafka-bootstrap.kafka:9092"
     topics:
       identityEvents: "identity.events"
       userEvents: "user.events"

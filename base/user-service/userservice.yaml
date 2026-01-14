@@ -20,7 +20,7 @@ spec:
   kafka:
     enabled: true
     brokers:
-      - "my-cluster-kafka-bootstrap.kafka:9092"
+      - "platform-kafka-kafka-bootstrap.kafka:9092"
     consumerGroupId: "user-service-group"
     topics:
       identityEvents: "identity.events"
