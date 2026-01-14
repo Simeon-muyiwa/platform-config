@@ -7,14 +7,13 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-    cert-manager.io/cluster-issuer: "letsencrypt-dns-prod"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
     - healthxcape.com
     - www.healthxcape.com
-    secretName: frontend-tls-cert
+    secretName: platform-wildcard-certificate
   rules:
   - host: healthxcape.com
     http:
