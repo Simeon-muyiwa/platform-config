@@ -1,0 +1,50 @@
+---
+# Persistent Volumes for Kafka Staging (2 brokers)
+# Using hostPath for staging - in production, use EBS/EFS
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-pv-0
+  labels:
+    type: kafka
+    broker: "0"
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/kafka/broker-0
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - ip-10-1-25-53  # Worker node
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-pv-1
+  labels:
+    type: kafka
+    broker: "1"
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/kafka/broker-1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - ip-10-1-25-53  # Worker node

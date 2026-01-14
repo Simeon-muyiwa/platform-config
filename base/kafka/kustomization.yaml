@@ -5,4 +5,5 @@ namespace: kafka
 
 resources:
   - namespace.yaml
+  - kafka-pvs.yaml
   - kafkacluster.yaml

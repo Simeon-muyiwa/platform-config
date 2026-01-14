@@ -4,20 +4,21 @@ metadata:
   name: platform-kafka
   namespace: kafka
 spec:
-  clusterName: my-cluster
+  clusterName: platform-kafka
   namespace: kafka
   
-  # Kafka version (Strimzi 0.38+ / Kafka 4.0)
+  # Kafka version (Strimzi 0.44+ / Kafka 4.0)
   version: "4.0.0"
   
-  # Replicas (1 for dev, 3+ for production)
-  replicas: 1
+  # Replicas: 2 for staging (HA with resource constraints)
+  replicas: 2
   
-  # Storage configuration
+  # Storage configuration - PERSISTENT for staging
   storage:
-    type: ephemeral  # Use 'persistent-claim' for production
+    type: persistent-claim
     size: 10Gi
-    storageClass: ""
+    storageClass: ""  # Uses default or manual PVs
+    deleteClaim: false  # Keep data on cluster deletion
   
   # Listener configuration
   listeners:
@@ -34,45 +35,44 @@ spec:
   kraft:
     enabled: true
   
-  # Platform topics
+  # Kafka config for staging (2 brokers)
+  config:
+    default.replication.factor: 2
+    min.insync.replicas: 1
+    offsets.topic.replication.factor: 2
+    transaction.state.log.replication.factor: 2
+    transaction.state.log.min.isr: 1
+    log.retention.hours: 168  # 7 days
+    num.partitions: 3
+  
+  # Platform topics with replication
   topics:
     - name: identity.events
       partitions: 3
-      replicas: 1
+      replicas: 2
       config:
         retention.ms: "604800000"  # 7 days
     - name: user.events
       partitions: 3
-      replicas: 1
+      replicas: 2
       config:
         retention.ms: "604800000"
     - name: blog.events
       partitions: 3
-      replicas: 1
+      replicas: 2
       config:
         retention.ms: "604800000"
     - name: platform-dlq
       partitions: 3
-      replicas: 1
+      replicas: 2
       config:
         retention.ms: "2592000000"  # 30 days
-    # CI/CD topics (for GitOps Coordinator)
-    - name: cicd.deployment-events
-      partitions: 3
-      replicas: 1
-      config:
-        retention.ms: "2592000000"
-    - name: cicd.deployment-status
-      partitions: 3
-      replicas: 1
-      config:
-        retention.ms: "2592000000"
   
-  # Resource limits
+  # Resource limits - optimized for staging
   resources:
     requests:
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
       memory: "1Gi"
       cpu: "500m"
-    limits:
-      memory: "2Gi"
-      cpu: "1000m"
