@@ -19,7 +19,7 @@ spec:
       serviceAccountName: webapp-operator-controller-manager
       containers:
         - name: manager
-          image: webapp-operator:v1.0.8
+          image: healthxcape/webapp-operator:v1.0.8
           imagePullPolicy: IfNotPresent
           env:
             - name: WATCH_NAMESPACE
