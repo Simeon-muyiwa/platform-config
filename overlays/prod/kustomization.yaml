@@ -23,7 +23,7 @@ images:
     newTag: v1.0.0
   - name: frontend
     newName: healthxcape/frontend
-    newTag: v1.0.0
+    newTag: v1.0.2
 
 # Production patches
 patches:
