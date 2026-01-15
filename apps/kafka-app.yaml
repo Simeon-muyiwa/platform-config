@@ -17,9 +17,10 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kafka
   syncPolicy:
-    automated:
-      prune: false  # Never auto-delete Kafka
-      selfHeal: true
+    # TEMPORARILY DISABLED - testing if Kafka sync was blocking frontend
+    # automated:
+    #   prune: false
+    #   selfHeal: true
     syncOptions:
       - CreateNamespace=true
     retry:
