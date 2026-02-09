@@ -1,0 +1,142 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: blogservices.apps.example.com
+spec:
+  group: apps.example.com
+  scope: Namespaced
+  names:
+    plural: blogservices
+    singular: blogservice
+    kind: BlogService
+    listKind: BlogServiceList
+    shortNames:
+      - blog
+      - blogsvc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  default: blog-service
+                  description: "Name of the blog service (Blog bounded context)"
+                image:
+                  type: string
+                  description: "Container image (e.g., blog-service:v1.0.0)"
+                replicas:
+                  type: integer
+                  default: 1
+                  minimum: 1
+                port:
+                  type: integer
+                  default: 3002
+                serviceType:
+                  type: string
+                  enum: ["ClusterIP", "NodePort", "LoadBalancer"]
+                  default: "NodePort"
+                nodePort:
+                  type: integer
+                  minimum: 30000
+                  maximum: 32767
+                # PostgreSQL for Blog storage
+                postgres:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    image:
+                      type: string
+                      default: "postgres:15-alpine"
+                    database:
+                      type: string
+                      default: "blog"
+                    user:
+                      type: string
+                      default: "blog"
+                    password:
+                      type: string
+                      default: "blog123"
+                    storageSize:
+                      type: string
+                      default: "1Gi"
+                # Kafka configuration for event-driven architecture
+                kafka:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    brokers:
+                      type: array
+                      items:
+                        type: string
+                      description: "Kafka bootstrap servers"
+                    clientId:
+                      type: string
+                      default: "blog-service"
+                    consumerGroupId:
+                      type: string
+                      default: "blog-consumer-group"
+                    topics:
+                      type: object
+                      properties:
+                        blogEvents:
+                          type: string
+                          default: "blog.events"
+                        userEvents:
+                          type: string
+                          default: "user.events"
+                    eventHandlers:
+                      type: string
+                      description: "JSON mapping of topic+eventType to use case names"
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                postgresReady:
+                  type: string
+                message:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

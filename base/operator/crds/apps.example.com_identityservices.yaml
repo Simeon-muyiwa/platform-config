@@ -1,0 +1,166 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: identityservices.apps.example.com
+spec:
+  group: apps.example.com
+  scope: Namespaced
+  names:
+    plural: identityservices
+    singular: identityservice
+    kind: IdentityService
+    listKind: IdentityServiceList
+    shortNames:
+      - identity
+      - idsvc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  default: identity-service
+                  description: "Name of the identity service (Auth bounded context)"
+                image:
+                  type: string
+                  description: "Container image (e.g., identity-service:v1.0.0)"
+                replicas:
+                  type: integer
+                  default: 1
+                  minimum: 1
+                port:
+                  type: integer
+                  default: 3000
+                serviceType:
+                  type: string
+                  enum: ["ClusterIP", "NodePort", "LoadBalancer"]
+                  default: "NodePort"
+                nodePort:
+                  type: integer
+                  minimum: 30000
+                  maximum: 32767
+                # PostgreSQL for Identity storage
+                postgres:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    image:
+                      type: string
+                      default: "postgres:15-alpine"
+                    database:
+                      type: string
+                      default: "identity"
+                    user:
+                      type: string
+                      default: "identity"
+                    password:
+                      type: string
+                      default: "identity123"
+                    storageSize:
+                      type: string
+                      default: "1Gi"
+                # Redis for refresh token storage
+                redis:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    image:
+                      type: string
+                      default: "redis:7-alpine"
+                # JWT configuration
+                jwt:
+                  type: object
+                  properties:
+                    secret:
+                      type: string
+                      default: "change-this-secret-in-production"
+                    audience:
+                      type: string
+                      default: "identity-service"
+                    issuer:
+                      type: string
+                      default: "identity-service"
+                    accessTokenTtl:
+                      type: integer
+                      default: 3600
+                    refreshTokenTtl:
+                      type: integer
+                      default: 86400
+                # User service URL for event notification
+                userServiceUrl:
+                  type: string
+                  description: "URL of the User service for identity.created events"
+                # Kafka configuration for event-driven architecture
+                kafka:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    brokers:
+                      type: array
+                      items:
+                        type: string
+                      description: "Kafka bootstrap servers"
+                    clientId:
+                      type: string
+                      default: "identity-service"
+                    consumerGroupId:
+                      type: string
+                      default: "identity-consumer-group"
+                    topics:
+                      type: object
+                      properties:
+                        identityEvents:
+                          type: string
+                          default: "identity.events"
+                        userEvents:
+                          type: string
+                          default: "user.events"
+                    eventHandlers:
+                      type: string
+                      description: "JSON mapping of topic+eventType to use case names"
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

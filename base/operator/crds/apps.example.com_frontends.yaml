@@ -1,0 +1,86 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: frontends.apps.example.com
+spec:
+  group: apps.example.com
+  names:
+    kind: Frontend
+    listKind: FrontendList
+    plural: frontends
+    singular: frontend
+    shortNames:
+      - fe
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  description: Name of the frontend service
+                image:
+                  type: string
+                  description: Docker image for the frontend
+                replicas:
+                  type: integer
+                  default: 1
+                  description: Number of replicas
+                port:
+                  type: integer
+                  default: 3000
+                  description: Container port
+                nodePort:
+                  type: integer
+                  default: 30080
+                  description: NodePort for external access
+                authApiUrl:
+                  type: string
+                  description: URL of the auth-service API
+                resources:
+                  type: object
+                  properties:
+                    limits:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+                    requests:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                replicas:
+                  type: integer
+                message:
+                  type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Phase
+          type: string
+          jsonPath: .status.phase

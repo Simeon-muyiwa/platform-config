@@ -4,6 +4,15 @@ kind: Kustomization
 namespace: platform-system
 
 resources:
+  # CRDs must be applied before operator deployment
+  - crds/apps.example.com_identityservices.yaml
+  - crds/apps.example.com_userservices.yaml
+  - crds/apps.example.com_blogservices.yaml
+  - crds/apps.example.com_frontends.yaml
+  - crds/apps.example.com_webapps.yaml
+  - crds/apps.example.com_authservices.yaml
+  - crds/apps.example.com_kafkaclusters.yaml
+  # Operator deployment
   - namespace.yaml
   - service-account.yaml
   - role.yaml

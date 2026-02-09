@@ -1,0 +1,252 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: kafkaclusters.apps.example.com
+spec:
+  group: apps.example.com
+  scope: Namespaced
+  names:
+    plural: kafkaclusters
+    singular: kafkacluster
+    kind: KafkaCluster
+    listKind: KafkaClusterList
+    shortNames:
+      - kafka
+      - kc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - clusterName
+              properties:
+                clusterName:
+                  type: string
+                  default: my-cluster
+                  description: "Name of the Kafka cluster"
+                namespace:
+                  type: string
+                  default: kafka
+                  description: "Namespace for Kafka cluster deployment"
+                # Strimzi Operator Configuration
+                strimzi:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    version:
+                      type: string
+                      default: "0.38.0"
+                      description: "Strimzi operator version"
+                    watchNamespaces:
+                      type: array
+                      items:
+                        type: string
+                      description: "Namespaces to watch (empty = all)"
+                # Kafka Cluster Configuration
+                kafka:
+                  type: object
+                  properties:
+                    version:
+                      type: string
+                      default: "4.0.0"
+                    replicas:
+                      type: integer
+                      default: 3
+                      minimum: 1
+                    listeners:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          port:
+                            type: integer
+                          type:
+                            type: string
+                            enum: ["internal", "route", "loadbalancer", "nodeport"]
+                          tls:
+                            type: boolean
+                    config:
+                      type: object
+                      x-kubernetes-preserve-unknown-fields: true
+                      description: "Kafka broker configuration"
+                    storage:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum: ["ephemeral", "persistent-claim", "jbod"]
+                          default: "persistent-claim"
+                        size:
+                          type: string
+                          default: "10Gi"
+                        storageClass:
+                          type: string
+                          description: "Storage class for PVCs"
+                        deleteClaim:
+                          type: boolean
+                          default: false
+                    resources:
+                      type: object
+                      properties:
+                        requests:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "1Gi"
+                            cpu:
+                              type: string
+                              default: "500m"
+                        limits:
+                          type: object
+                          properties:
+                            memory:
+                              type: string
+                              default: "2Gi"
+                            cpu:
+                              type: string
+                              default: "1000m"
+                # KRaft mode (no ZooKeeper)
+                kraft:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                      description: "Enable KRaft mode (no ZooKeeper)"
+                    metadataVersion:
+                      type: string
+                      default: "4.0-IV0"
+                # KafkaNodePool configuration (required for KRaft in Strimzi 0.38+)
+                nodepool:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      default: "dual-role"
+                      description: "Name of the KafkaNodePool"
+                    roles:
+                      type: array
+                      items:
+                        type: string
+                        enum: ["controller", "broker"]
+                      default: ["controller", "broker"]
+                      description: "Roles for this node pool"
+                # Topics Configuration
+                topics:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                    properties:
+                      name:
+                        type: string
+                        description: "Topic name"
+                      partitions:
+                        type: integer
+                        default: 6
+                        minimum: 1
+                      replicas:
+                        type: integer
+                        default: 3
+                        minimum: 1
+                      config:
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                        description: "Topic-specific configuration"
+                # Debezium CDC Connector
+                debezium:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    image:
+                      type: string
+                      default: "quay.io/debezium/connect:2.4"
+                    replicas:
+                      type: integer
+                      default: 1
+                    connectors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          database:
+                            type: string
+                          hostname:
+                            type: string
+                          port:
+                            type: integer
+                          user:
+                            type: string
+                          password:
+                            type: string
+                          tables:
+                            type: array
+                            items:
+                              type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                strimziReady:
+                  type: string
+                kafkaReady:
+                  type: string
+                topicsReady:
+                  type: string
+                debeziumReady:
+                  type: string
+                bootstrapServers:
+                  type: string
+                message:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Cluster
+          type: string
+          jsonPath: .spec.clusterName
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.kafka.replicas
+        - name: KRaft
+          type: boolean
+          jsonPath: .spec.kraft.enabled
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
