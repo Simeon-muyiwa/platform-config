@@ -19,8 +19,8 @@ spec:
       serviceAccountName: webapp-operator-controller-manager
       containers:
         - name: manager
-          image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator:v1.1.4
-          imagePullPolicy: IfNotPresent
+          image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator:v1.1.5
+          imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
               value: ""
