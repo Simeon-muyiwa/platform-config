@@ -29,7 +29,7 @@ spec:
               properties:
                 clusterName:
                   type: string
-                  default: my-cluster
+                  default: platform-kafka
                   description: "Name of the Kafka cluster"
                 namespace:
                   type: string
