@@ -21,6 +21,24 @@ rules:
       - patch
       - update
       - watch
+  # Namespaces - cross-namespace watching and kafka namespace creation
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+  # Events - status reporting
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
   # Deployments and StatefulSets
   - apiGroups:
       - apps
@@ -76,6 +94,8 @@ rules:
       - kafkas
       - kafkatopics
       - kafkausers
+      - kafkanodepools
+      - kafkaconnects
     verbs:
       - create
       - delete
@@ -84,12 +104,54 @@ rules:
       - patch
       - update
       - watch
-  # RBAC
+  # CRDs - needed for Strimzi operator installation
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  # RBAC - needed for Strimzi operator installation
   - apiGroups:
       - rbac.authorization.k8s.io
     resources:
+      - clusterroles
+      - clusterrolebindings
       - roles
       - rolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+      - bind
+      - escalate
+  # Network policies
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - networkpolicies
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  # Batch jobs - for Strimzi
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
     verbs:
       - create
       - delete
