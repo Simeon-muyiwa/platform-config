@@ -23,7 +23,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - ip-10-1-25-53  # Worker node
+          - ip-10-1-66-185  # Worker node
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -47,4 +47,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - ip-10-1-25-53  # Worker node
+          - ip-10-1-66-185  # Worker node
