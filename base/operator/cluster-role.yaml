@@ -28,8 +28,11 @@ rules:
       - namespaces
     verbs:
       - create
+      - delete
       - get
       - list
+      - patch
+      - update
       - watch
   # Events - status reporting
   - apiGroups:
