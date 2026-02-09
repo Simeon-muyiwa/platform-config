@@ -9,21 +9,8 @@ resources:
   - ../../base/blog-service
   - ../../base/frontend
 
-# Production images - using local images for air-gapped cluster
-# For ECR deployment, use: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/<service>
-images:
-  - name: identity-service
-    newName: healthxcape/identity-service
-    newTag: v1.0.0
-  - name: user-service
-    newName: healthxcape/user-service
-    newTag: v1.0.0
-  - name: blog-service
-    newName: healthxcape/blog-service
-    newTag: v1.0.0
-  - name: frontend
-    newName: healthxcape/frontend
-    newTag: v1.0.2
+# Images are set directly in base CRs (kustomize images transformer doesn't apply to CRD custom fields)
+# Current: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/<service>:v1.1.0
 
 # Production patches
 patches:

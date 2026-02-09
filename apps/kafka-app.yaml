@@ -4,7 +4,7 @@ metadata:
   name: kafka-cluster
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "5"  # After platform-services so Kafka issues don't block frontend
+    argocd.argoproj.io/sync-wave: "-3"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -17,10 +17,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kafka
   syncPolicy:
-    # TEMPORARILY DISABLED - testing if Kafka sync was blocking frontend
-    # automated:
-    #   prune: false
-    #   selfHeal: true
+    automated:
+      prune: false  # Never auto-delete Kafka
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
     retry:

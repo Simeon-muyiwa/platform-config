@@ -4,7 +4,7 @@ metadata:
   name: auth-frontend
 spec:
   serviceName: auth-frontend
-  image: healthxcape/frontend:v1.0.4
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v1.1.0
   replicas: 3
   port: 3000
   serviceType: ClusterIP

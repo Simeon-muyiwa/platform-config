@@ -6,4 +6,12 @@ namespace: kafka
 resources:
   - namespace.yaml
   - kafka-pvs.yaml
-  - kafka.yaml
+  - kafkacluster.yaml
+  # Note: Using custom KafkaCluster CR instead of native Strimzi resources
+  # The webapp-operator's kafkacluster role will:
+  #   1. Install Strimzi operator (if not present)
+  #   2. Create native Kafka/KafkaNodePool CRs
+  #   3. Create KafkaTopics
+  # 
+  # kafka.yaml contains native Strimzi resources and is kept for reference
+  # but should NOT be included when using the custom CR approach
