@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/Simeon-muyiwa/platform-config.git
     targetRevision: main
-    path: base/operator
+    path: overlays/prod/operator
   destination:
     server: https://kubernetes.default.svc
     namespace: platform-system
