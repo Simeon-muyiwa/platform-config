@@ -1,0 +1,140 @@
+---
+# ECR Credential Refresher CronJob
+# Refreshes ECR docker-registry secrets every 8 hours (token valid ~12h)
+# Runs on master node (has internet + IMDS access)
+# Uses public.ecr.aws image (no Docker Hub dependency)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ecr-credential-refresher
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: ecr-credential-refresher
+    app.kubernetes.io/component: infrastructure
+spec:
+  schedule: "0 */8 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: ecr-credential-refresher
+        spec:
+          # Run on control-plane node (has internet access + IAM role)
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: ""
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+          # hostNetwork ensures IMDS access (169.254.169.254)
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
+          serviceAccountName: ecr-credential-refresher
+          restartPolicy: OnFailure
+          containers:
+            - name: ecr-refresher
+              image: public.ecr.aws/aws-cli/aws-cli:2.22.35
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: AWS_DEFAULT_REGION
+                  value: "eu-west-2"
+                - name: ECR_ACCOUNT_ID
+                  value: "939217651725"
+                - name: SECRET_NAME
+                  value: "ecr-registry-secret"
+                # Space-separated list of namespaces to create the secret in
+                - name: TARGET_NAMESPACES
+                  value: "default platform-system kafka"
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+
+                  REGISTRY="${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+
+                  echo "==> Fetching ECR token for ${REGISTRY}..."
+                  ECR_TOKEN=$(aws ecr get-login-password --region "${AWS_DEFAULT_REGION}")
+
+                  # Build docker config JSON and base64 encode it
+                  DOCKER_CONFIG=$(printf '{"auths":{"%s":{"username":"AWS","password":"%s"}}}' \
+                    "${REGISTRY}" "${ECR_TOKEN}" | base64 | tr -d '\n')
+
+                  # Kubernetes API details (from mounted service account)
+                  K8S_API="https://kubernetes.default.svc"
+                  SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+                  CA_CERT="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+                  for NS in ${TARGET_NAMESPACES}; do
+                    echo "==> Processing namespace: ${NS}"
+
+                    # Check if namespace exists
+                    NS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+                      --cacert "${CA_CERT}" \
+                      -H "Authorization: Bearer ${SA_TOKEN}" \
+                      "${K8S_API}/api/v1/namespaces/${NS}")
+
+                    if [ "${NS_CODE}" != "200" ]; then
+                      echo "    Namespace ${NS} not found (HTTP ${NS_CODE}), skipping"
+                      continue
+                    fi
+
+                    # Build the Secret JSON
+                    SECRET_JSON=$(cat <<EOFJ
+                  {
+                    "apiVersion": "v1",
+                    "kind": "Secret",
+                    "metadata": {
+                      "name": "${SECRET_NAME}",
+                      "namespace": "${NS}",
+                      "labels": {
+                        "app.kubernetes.io/managed-by": "ecr-credential-refresher"
+                      }
+                    },
+                    "type": "kubernetes.io/dockerconfigjson",
+                    "data": {
+                      ".dockerconfigjson": "${DOCKER_CONFIG}"
+                    }
+                  }
+                  EOFJ
+                  )
+
+                    # Try PUT (update); fall back to POST (create) on 404
+                    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+                      --cacert "${CA_CERT}" \
+                      -H "Authorization: Bearer ${SA_TOKEN}" \
+                      -H "Content-Type: application/json" \
+                      -X PUT \
+                      -d "${SECRET_JSON}" \
+                      "${K8S_API}/api/v1/namespaces/${NS}/secrets/${SECRET_NAME}")
+
+                    if [ "${HTTP_CODE}" = "404" ]; then
+                      curl -s -o /dev/null \
+                        --cacert "${CA_CERT}" \
+                        -H "Authorization: Bearer ${SA_TOKEN}" \
+                        -H "Content-Type: application/json" \
+                        -X POST \
+                        -d "${SECRET_JSON}" \
+                        "${K8S_API}/api/v1/namespaces/${NS}/secrets"
+                      echo "    Created ${SECRET_NAME} in ${NS}"
+                    elif [ "${HTTP_CODE}" = "200" ]; then
+                      echo "    Updated ${SECRET_NAME} in ${NS}"
+                    else
+                      echo "    ERROR: Failed to upsert secret in ${NS} (HTTP ${HTTP_CODE})"
+                      exit 1
+                    fi
+                  done
+
+                  echo "==> ECR credential refresh complete!"
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 128Mi

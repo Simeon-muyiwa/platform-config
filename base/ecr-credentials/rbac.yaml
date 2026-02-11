@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ecr-credential-refresher
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: ecr-credential-refresher
+    app.kubernetes.io/component: infrastructure
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ecr-credential-refresher
+  labels:
+    app.kubernetes.io/name: ecr-credential-refresher
+rules:
+  # Manage docker-registry secrets across namespaces
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "create", "update", "patch"]
+  # Check namespace existence before creating secrets
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ecr-credential-refresher
+  labels:
+    app.kubernetes.io/name: ecr-credential-refresher
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ecr-credential-refresher
+subjects:
+  - kind: ServiceAccount
+    name: ecr-credential-refresher
+    namespace: kube-system
