@@ -2,10 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../../base/operator
+- ../../../base/operator
 
 # Image tag managed by CI/CD (build-all.yml update-gitops job)
 # The kustomize images transformer works on standard Deployments
 images:
-  - name: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
-    newTag: v4-6048412
+- name: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
+  newTag: v6-8c7247e
