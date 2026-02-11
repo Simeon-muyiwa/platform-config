@@ -16,11 +16,11 @@ spec:
     version: "4.0.0"
     replicas: 2
     
-    # Storage configuration - PERSISTENT for staging
+    # Storage configuration - EBS CSI dynamic provisioning
     storage:
       type: persistent-claim
       size: 10Gi
-      storageClass: ""
+      storageClass: "ebs-gp3"
       deleteClaim: false
     
     # Listener configuration
