@@ -4,26 +4,42 @@ kind: Kustomization
 namespace: default
 
 resources:
-  - ../../base/identity-service
-  - ../../base/user-service
-  - ../../base/blog-service
-  - ../../base/frontend
+- ../../base/identity-service
+- ../../base/user-service
+- ../../base/blog-service
+- ../../base/frontend
 
 # Images are set directly in base CRs (kustomize images transformer doesn't apply to CRD custom fields)
 # Current: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/<service>:v1.1.0
 
 # Production patches
 patches:
-  - path: patches/replicas-ha.yaml
-  - path: patches/resources-prod.yaml
+- path: patches/replicas-ha.yaml
+- path: patches/resources-prod.yaml
 
 # ConfigMap for production rules
 configMapGenerator:
-  - name: platform-rules
-    files:
-      - rules.json
-    options:
-      disableNameSuffixHash: true
+- files:
+  - rules.json
+  name: platform-rules
+  options:
+    disableNameSuffixHash: true
 
 commonLabels:
   environment: prod
+images:
+- name: blog-service
+  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service
+  newTag: v4-6048412
+- name: frontend
+  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend
+  newTag: v4-6048412
+- name: identity-service
+  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service
+  newTag: v4-6048412
+- name: user-service
+  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service
+  newTag: v4-6048412
+- name: webapp-operator
+  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
+  newTag: v4-6048412
