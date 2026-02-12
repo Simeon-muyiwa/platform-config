@@ -4,7 +4,7 @@ metadata:
   name: identity-service
 spec:
   serviceName: identity-service
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v4-6048412
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v5-58f5af9
   replicas: 1
   port: 3000
   serviceType: ClusterIP
