@@ -30,16 +30,16 @@ commonLabels:
 images:
 - name: blog-service
   newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service
-  newTag: v4-6048412
+  newTag: v5-58f5af9
 - name: frontend
   newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend
-  newTag: v4-6048412
+  newTag: v5-58f5af9
 - name: identity-service
   newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service
-  newTag: v4-6048412
+  newTag: v5-58f5af9
 - name: user-service
   newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service
-  newTag: v4-6048412
+  newTag: v5-58f5af9
 - name: webapp-operator
   newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
   newTag: v4-6048412
