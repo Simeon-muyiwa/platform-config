@@ -1,0 +1,31 @@
+# Development: Override postgres credentials for minikube
+# Base CRs have placeholder production values; dev uses simple local-only passwords
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  postgres:
+    password: identity123
+    image: postgres:15-alpine
+    storageSize: 1Gi
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UserService
+metadata:
+  name: user-service
+spec:
+  postgres:
+    password: userservice123
+    image: postgres:15-alpine
+    storageSize: 1Gi
+---
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  postgres:
+    password: blogservice123
+    image: postgres:15-alpine
+    storageSize: 1Gi

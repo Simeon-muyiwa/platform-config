@@ -14,7 +14,7 @@ spec:
     enabled: true
     database: blog
     user: blogservice
-    passwordSecret: blog-postgres-secret
+    password: change-in-production
   
   # Kafka configuration
   kafka:
@@ -25,8 +25,3 @@ spec:
     topics:
       blogEvents: "blog.events"
       userEvents: "user.events"
-  
-  # Health check
-  healthCheck:
-    path: /api/v1/health
-    port: 3002

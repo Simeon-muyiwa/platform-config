@@ -14,7 +14,7 @@ spec:
     enabled: true
     database: users
     user: userservice
-    passwordSecret: user-postgres-secret
+    password: change-in-production
   
   # Kafka configuration
   kafka:
@@ -26,8 +26,3 @@ spec:
       identityEvents: "identity.events"
       userEvents: "user.events"
     eventHandlers: '{"identity.events":{"identity.created":"CreateProfileUseCase"}}'
-  
-  # Health check
-  healthCheck:
-    path: /profiles/health
-    port: 3001

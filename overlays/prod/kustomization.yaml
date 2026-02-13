@@ -4,42 +4,31 @@ kind: Kustomization
 namespace: default
 
 resources:
-- ../../base/identity-service
-- ../../base/user-service
-- ../../base/blog-service
-- ../../base/frontend
+  - ../../base/identity-service
+  - ../../base/auth-service
+  - ../../base/user-service
+  - ../../base/blog-service
+  - ../../base/frontend
 
-# Images are set directly in base CRs (kustomize images transformer doesn't apply to CRD custom fields)
-# Current: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/<service>:v1.1.0
+# NOTE: Kustomize `images` transformer does NOT work on CRD custom fields
+# (spec.image). We use strategic merge patches instead — see patches/images-prod.yaml
+# CI/CD update-gitops job uses yq to update the patch file after each build.
 
 # Production patches
 patches:
-- path: patches/replicas-ha.yaml
-- path: patches/resources-prod.yaml
+  - path: patches/images-prod.yaml     # Override spec.image → ECR tags (updated by CI/CD)
+  - path: patches/replicas-ha.yaml     # HA replica counts
+  - path: patches/resources-prod.yaml  # Production resource requests/limits
 
 # ConfigMap for production rules
 configMapGenerator:
-- files:
-  - rules.json
-  name: platform-rules
-  options:
-    disableNameSuffixHash: true
+  - name: platform-rules
+    files:
+      - rules.json
+    options:
+      disableNameSuffixHash: true
 
-commonLabels:
-  environment: prod
-images:
-- name: blog-service
-  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service
-  newTag: v5-58f5af9
-- name: frontend
-  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend
-  newTag: v5-58f5af9
-- name: identity-service
-  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service
-  newTag: v5-58f5af9
-- name: user-service
-  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service
-  newTag: v5-58f5af9
-- name: webapp-operator
-  newName: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
-  newTag: v4-6048412
+labels:
+  - pairs:
+      environment: prod
+    includeSelectors: false

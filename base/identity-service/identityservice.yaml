@@ -14,12 +14,11 @@ spec:
     enabled: true
     database: identity
     user: identity
-    passwordSecret: identity-postgres-secret
+    password: change-in-production
   
   # Redis configuration
   redis:
     enabled: true
-    port: 6379
   
   # Kafka configuration
   kafka:
@@ -33,10 +32,5 @@ spec:
   # JWT configuration
   jwt:
     secret: "platform-jwt-secret"
-    expiresIn: "15m"
-    refreshExpiresIn: "7d"
-  
-  # Health check
-  healthCheck:
-    path: /health
-    port: 3000
+    accessTokenTtl: 900
+    refreshTokenTtl: 604800

@@ -1,35 +1,41 @@
-# Development: Single replica for all services
+# Development: NodePort services for minikube direct access
+# Production uses ClusterIP behind Ingress; minikube uses NodePort for local access
 apiVersion: apps.example.com/v1alpha1
 kind: IdentityService
 metadata:
   name: identity-service
 spec:
-  replicas: 1
+  serviceType: NodePort
+  nodePort: 30083
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: AuthService
 metadata:
   name: auth-service
 spec:
-  replicas: 1
+  serviceType: NodePort
+  nodePort: 30081
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
 spec:
-  replicas: 1
+  serviceType: NodePort
+  nodePort: 30084
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: BlogService
 metadata:
   name: blog-service
 spec:
-  replicas: 1
+  serviceType: NodePort
+  nodePort: 30085
 ---
+# Frontend CRD does not have serviceType field — operator infers type from nodePort
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  replicas: 1
+  nodePort: 30082

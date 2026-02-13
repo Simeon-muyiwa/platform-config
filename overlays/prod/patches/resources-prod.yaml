@@ -1,42 +1,19 @@
 # Production: Full resources
+# NOTE: Only AuthService and Frontend CRDs have a resources field.
+# IdentityService, UserService, BlogService CRDs do not support spec.resources.
+# TODO: Add resources field to remaining CRDs in the operator
 apiVersion: apps.example.com/v1alpha1
-kind: IdentityService
+kind: AuthService
 metadata:
-  name: identity-service
+  name: auth-service
 spec:
   resources:
     requests:
-      memory: "512Mi"
-      cpu: "250m"
+      memory: "256Mi"
+      cpu: "100m"
     limits:
-      memory: "1Gi"
-      cpu: "1000m"
----
-apiVersion: apps.example.com/v1alpha1
-kind: UserService
-metadata:
-  name: user-service
-spec:
-  resources:
-    requests:
       memory: "512Mi"
-      cpu: "250m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
----
-apiVersion: apps.example.com/v1alpha1
-kind: BlogService
-metadata:
-  name: blog-service
-spec:
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "250m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
+      cpu: "500m"
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend

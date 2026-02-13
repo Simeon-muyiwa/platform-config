@@ -1,0 +1,38 @@
+# Production: Override spec.image with ECR image URIs
+# CI/CD update-gitops job uses yq to update these tags after each build.
+# Kustomize images transformer does NOT work on CRD custom fields (spec.image).
+# Strategic merge patches target each CR by kind+name to set the correct ECR tag.
+apiVersion: apps.example.com/v1alpha1
+kind: IdentityService
+metadata:
+  name: identity-service
+spec:
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v5-58f5af9
+---
+apiVersion: apps.example.com/v1alpha1
+kind: AuthService
+metadata:
+  name: auth-service
+spec:
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v5-58f5af9
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UserService
+metadata:
+  name: user-service
+spec:
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v5-58f5af9
+---
+apiVersion: apps.example.com/v1alpha1
+kind: BlogService
+metadata:
+  name: blog-service
+spec:
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v5-58f5af9
+---
+apiVersion: apps.example.com/v1alpha1
+kind: Frontend
+metadata:
+  name: auth-frontend
+spec:
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v5-58f5af9

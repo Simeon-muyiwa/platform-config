@@ -1,0 +1,29 @@
+apiVersion: apps.example.com/v1alpha1
+kind: AuthService
+metadata:
+  name: auth-service
+spec:
+  serviceName: auth-service
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v5-58f5af9
+  replicas: 1
+  port: 3000
+  serviceType: ClusterIP
+
+  # PostgreSQL configuration
+  postgres:
+    enabled: true
+    image: postgres:15-alpine
+    database: authdb
+    username: postgres
+    password: pass123
+
+  # Redis configuration
+  redis:
+    enabled: true
+    image: redis:7-alpine
+
+  # JWT configuration
+  jwt:
+    secret: my-dev-secret-change-in-production
+    accessTokenTtl: "3600"
+    refreshTokenTtl: "86400"

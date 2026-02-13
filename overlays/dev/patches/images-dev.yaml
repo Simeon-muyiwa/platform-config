@@ -1,35 +1,37 @@
-# Development: Single replica for all services
+# Development: Override spec.image for minikube local Docker images
+# Kustomize images transformer does NOT work on CRD custom fields (spec.image).
+# Strategic merge patches target each CR by kind+name to set the correct local tag.
 apiVersion: apps.example.com/v1alpha1
 kind: IdentityService
 metadata:
   name: identity-service
 spec:
-  replicas: 1
+  image: identity-service:v1.0.5
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: AuthService
 metadata:
   name: auth-service
 spec:
-  replicas: 1
+  image: auth-service:v1.0.0
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
 spec:
-  replicas: 1
+  image: user-service:v1.0.4
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: BlogService
 metadata:
   name: blog-service
 spec:
-  replicas: 1
+  image: blog-service:v1.0.5
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  replicas: 1
+  image: frontend:v1.0.2

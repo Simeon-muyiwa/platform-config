@@ -5,29 +5,21 @@ namespace: default
 
 resources:
   - ../../base/identity-service
+  - ../../base/auth-service
   - ../../base/user-service
   - ../../base/blog-service
   - ../../base/frontend
 
-# Development images (local or minikube registry)
-images:
-  - name: healthxcape/identity-service
-    newName: healthxcape/identity-service
-    newTag: v1.0.0
-  - name: healthxcape/user-service
-    newName: healthxcape/user-service
-    newTag: v1.0.0
-  - name: healthxcape/blog-service
-    newName: healthxcape/blog-service
-    newTag: v1.0.0
-  - name: healthxcape/frontend
-    newName: healthxcape/frontend
-    newTag: v1.0.1
+# NOTE: Kustomize `images` transformer does NOT work on CRD custom fields
+# (spec.image). We use strategic merge patches instead — see patches/images-dev.yaml
 
 # Development patches
 patches:
-  - path: patches/replicas.yaml
-  - path: patches/resources.yaml
+  - path: patches/images-dev.yaml     # Override spec.image → local minikube tags
+  - path: patches/service-type.yaml   # ClusterIP → NodePort for minikube access
+  - path: patches/replicas.yaml       # Single replica per service
+  - path: patches/resources.yaml      # Minimal resource requests/limits (AuthService, Frontend only)
+  - path: patches/postgres-dev.yaml   # Dev postgres credentials + image + storageSize
 
 # ConfigMap for development rules
 configMapGenerator:
@@ -37,5 +29,7 @@ configMapGenerator:
     options:
       disableNameSuffixHash: true
 
-commonLabels:
-  environment: dev
+labels:
+  - pairs:
+      environment: dev
+    includeSelectors: false
