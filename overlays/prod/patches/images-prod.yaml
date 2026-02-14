@@ -7,7 +7,7 @@ kind: IdentityService
 metadata:
   name: identity-service
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v7-104644f
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v5-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: AuthService
