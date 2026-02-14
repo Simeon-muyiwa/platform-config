@@ -35,4 +35,4 @@ kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v7-104644f
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v5-0e6ee00
