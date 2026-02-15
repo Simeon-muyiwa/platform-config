@@ -36,7 +36,7 @@ configMapGenerator:
       - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v11-4430180
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v11-4430180
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v11-4430180
-      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v11-4430180
+      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v6-30b7fec
 
 # ─── Replacements: ConfigMap literals → CRD spec.image ─────────────────────
 # Each replacement sources a value from the service-images ConfigMap and injects
