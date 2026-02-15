@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitops-coordinator
+  namespace: platform-system
+  labels:
+    app: gitops-coordinator
+spec:
+  selector:
+    app: gitops-coordinator
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  type: ClusterIP

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitops-coordinator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"  # After operator (-5), before services (0)
+  labels:
+    app.kubernetes.io/part-of: platform
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Simeon-muyiwa/platform-config.git
+    targetRevision: main
+    path: base/coordinator
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

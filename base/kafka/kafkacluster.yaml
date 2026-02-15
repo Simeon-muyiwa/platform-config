@@ -75,3 +75,14 @@ spec:
       replicas: 2
       config:
         retention.ms: "2592000000"
+    # CI/CD coordinator topics
+    - name: cicd.deployment-events
+      partitions: 3
+      replicas: 2
+      config:
+        retention.ms: "2592000000"
+    - name: cicd.deployment-status
+      partitions: 3
+      replicas: 2
+      config:
+        retention.ms: "2592000000"

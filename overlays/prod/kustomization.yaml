@@ -10,23 +10,89 @@ resources:
   - ../../base/blog-service
   - ../../base/frontend
 
-# NOTE: Kustomize `images` transformer does NOT work on CRD custom fields
-# (spec.image). We use strategic merge patches instead — see patches/images-prod.yaml
-# CI/CD update-gitops job uses yq to update the patch file after each build.
-
-# Production patches
+# Production patches (HA replicas + resource limits)
 patches:
-  - path: patches/images-prod.yaml     # Override spec.image → ECR tags (updated by CI/CD)
   - path: patches/replicas-ha.yaml     # HA replica counts
   - path: patches/resources-prod.yaml  # Production resource requests/limits
 
-# ConfigMap for production rules
+# ─── Image Tag Management via configMapGenerator ───────────────────────────
+# CI/CD updates the literals below (one per service). configMapGenerator hashes
+# the content, so any tag change produces a new ConfigMap name → ArgoCD detects
+# the diff and syncs. The `replacements` block injects each literal value into
+# the corresponding CRD's spec.image field at kustomize-build time.
+#
+# To update a service image tag:
+#   sed -i "s|identity-service=.*|identity-service=<ECR_URL>:<TAG>|" kustomization.yaml
+#
 configMapGenerator:
   - name: platform-rules
     files:
       - rules.json
     options:
       disableNameSuffixHash: true
+  - name: service-images
+    literals:
+      - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v11-4430180
+      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v11-4430180
+      - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v11-4430180
+      - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v11-4430180
+      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v11-4430180
+
+# ─── Replacements: ConfigMap literals → CRD spec.image ─────────────────────
+# Each replacement sources a value from the service-images ConfigMap and injects
+# it into the target CRD's spec.image field. This replaces the old
+# images-prod.yaml strategic merge patch approach.
+replacements:
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.identity-service
+    targets:
+      - select:
+          kind: IdentityService
+          name: identity-service
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.auth-service
+    targets:
+      - select:
+          kind: AuthService
+          name: auth-service
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.user-service
+    targets:
+      - select:
+          kind: UserService
+          name: user-service
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.blog-service
+    targets:
+      - select:
+          kind: BlogService
+          name: blog-service
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.frontend
+    targets:
+      - select:
+          kind: Frontend
+          name: auth-frontend
+        fieldPaths:
+          - spec.image
 
 labels:
   - pairs:

@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitops-coordinator
+  namespace: platform-system
+  labels:
+    app: gitops-coordinator
+spec:
+  replicas: 1          # SINGLETON — must be 1
+  strategy:
+    type: Recreate     # No rolling update for singleton writer
+  selector:
+    matchLabels:
+      app: gitops-coordinator
+  template:
+    metadata:
+      labels:
+        app: gitops-coordinator
+    spec:
+      serviceAccountName: gitops-coordinator
+      imagePullSecrets:
+        - name: ecr-registry-secret
+      # Wait for Kafka before starting coordinator
+      initContainers:
+        - name: wait-for-kafka
+          image: busybox:1.36
+          command: ['sh', '-c']
+          args:
+            - |
+              echo "Waiting for Kafka broker at platform-kafka-kafka-bootstrap.kafka:9092 ..."
+              attempt=0
+              until nc -z platform-kafka-kafka-bootstrap.kafka 9092 2>/dev/null; do
+                attempt=$((attempt + 1))
+                if [ $attempt -ge 90 ]; then
+                  echo "ERROR: Kafka not ready after 90 attempts (450s). Exiting."
+                  exit 1
+                fi
+                echo "Attempt $attempt: Kafka not ready, retrying in 5s..."
+                sleep 5
+              done
+              echo "Kafka is ready — starting gitops-coordinator"
+          resources:
+            requests:
+              memory: "16Mi"
+              cpu: "10m"
+            limits:
+              memory: "32Mi"
+              cpu: "50m"
+      containers:
+        - name: coordinator
+          image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/gitops-coordinator:v1.0.0
+          ports:
+            - containerPort: 8000
+              name: http
+          env:
+            - name: GIT_REPO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: git-credentials
+                  key: repo_url
+                  optional: true
+            - name: KAFKA_BROKERS
+              value: "platform-kafka-kafka-bootstrap.kafka:9092"
+            - name: ARGOCD_SERVER
+              value: "argocd-server.argocd:443"
+            - name: ENVIRONMENT
+              value: "prod"
+            - name: LOG_LEVEL
+              value: "INFO"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
