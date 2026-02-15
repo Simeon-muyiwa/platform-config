@@ -7,32 +7,32 @@ kind: IdentityService
 metadata:
   name: identity-service
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v9-4430180
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v10-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: AuthService
 metadata:
   name: auth-service
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v9-4430180
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v10-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v9-4430180
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v10-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: BlogService
 metadata:
   name: blog-service
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v9-4430180
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v10-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v9-4430180
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v10-4430180
