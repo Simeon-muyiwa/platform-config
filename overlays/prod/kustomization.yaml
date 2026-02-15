@@ -22,7 +22,7 @@ patches:
 # the corresponding CRD's spec.image field at kustomize-build time.
 #
 # To update a service image tag:
-#   sed -i "s|identity-service=.*|identity-service=<ECR_URL>:<TAG>|" kustomization.yaml
+#   sed -i "s|identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v6-30b7fec
 #
 configMapGenerator:
   - name: platform-rules
@@ -32,7 +32,7 @@ configMapGenerator:
       disableNameSuffixHash: true
   - name: service-images
     literals:
-      - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v11-4430180
+      - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v6-30b7fec
       - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v2-30b7fec
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v6-30b7fec
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v6-30b7fec
