@@ -33,7 +33,7 @@ configMapGenerator:
   - name: service-images
     literals:
       - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v11-4430180
-      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v11-4430180
+      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v2-30b7fec
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v6-30b7fec
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v6-30b7fec
       - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v6-30b7fec
