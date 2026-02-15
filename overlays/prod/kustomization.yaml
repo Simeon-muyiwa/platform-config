@@ -22,7 +22,7 @@ patches:
 # the corresponding CRD's spec.image field at kustomize-build time.
 #
 # To update a service image tag:
-#   sed -i "s|identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v6-30b7fec
+#   sed -i "s|identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v12-a0a813c
 #
 configMapGenerator:
   - name: platform-rules
@@ -32,11 +32,11 @@ configMapGenerator:
       disableNameSuffixHash: true
   - name: service-images
     literals:
-      - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v6-30b7fec
-      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v2-30b7fec
-      - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v6-30b7fec
-      - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v6-30b7fec
-      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v6-30b7fec
+      - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v12-a0a813c
+      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v12-a0a813c
+      - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v12-a0a813c
+      - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v12-a0a813c
+      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v12-a0a813c
 
 # ─── Replacements: ConfigMap literals → CRD spec.image ─────────────────────
 # Each replacement sources a value from the service-images ConfigMap and injects
