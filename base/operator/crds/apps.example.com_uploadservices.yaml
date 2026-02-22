@@ -1,0 +1,169 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: uploadservices.apps.example.com
+spec:
+  group: apps.example.com
+  names:
+    kind: UploadService
+    listKind: UploadServiceList
+    plural: uploadservices
+    singular: uploadservice
+    shortNames:
+      - upload
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  description: Name of the upload service
+                image:
+                  type: string
+                  description: Docker image for the upload service
+                replicas:
+                  type: integer
+                  default: 1
+                  description: Number of replicas
+                port:
+                  type: integer
+                  default: 3000
+                  description: Container port (Next.js default)
+                nodePort:
+                  type: integer
+                  default: 30092
+                  description: NodePort for external access
+                serviceType:
+                  type: string
+                  default: ClusterIP
+                  enum: [ClusterIP, NodePort, LoadBalancer]
+                  description: Kubernetes service type
+                # PostgreSQL configuration (upload_service database)
+                postgres:
+                  type: object
+                  properties:
+                    image:
+                      type: string
+                      default: "postgres:15-alpine"
+                    storageSize:
+                      type: string
+                      default: "5Gi"
+                    database:
+                      type: string
+                      default: "upload_service"
+                    user:
+                      type: string
+                      default: "upload_user"
+                    password:
+                      type: string
+                      default: "upload_password"
+                    port:
+                      type: integer
+                      default: 5432
+                # AWS S3 configuration (presigned uploads)
+                s3:
+                  type: object
+                  properties:
+                    region:
+                      type: string
+                      default: "eu-west-2"
+                    bucket:
+                      type: string
+                      default: "platform-uploads"
+                    uploadPrefix:
+                      type: string
+                      default: "uploads/"
+                    cdnDomain:
+                      type: string
+                      description: CloudFront CDN domain
+                    accessKeyId:
+                      type: string
+                    secretAccessKey:
+                      type: string
+                    endpoint:
+                      type: string
+                      description: Custom S3 endpoint (e.g. MinIO)
+                    forcePathStyle:
+                      type: boolean
+                      default: false
+                      description: Use path-style for S3 (required for MinIO)
+                # Auth configuration
+                auth:
+                  type: object
+                  properties:
+                    secret:
+                      type: string
+                      description: Shared JWT secret with identity-service
+                    nextauthUrl:
+                      type: string
+                      description: NextAuth callback URL
+                # Uppy Companion (OAuth proxy for cloud sources)
+                companion:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      description: Companion server URL
+                    secret:
+                      type: string
+                      description: Companion shared secret
+                # Media processing API (media-api service)
+                processingApiUrl:
+                  type: string
+                  description: URL of the media-api processing endpoint
+                # CORS
+                allowedOrigin:
+                  type: string
+                  default: "*"
+                  description: Allowed CORS origin
+                resources:
+                  type: object
+                  properties:
+                    limits:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+                    requests:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                        memory:
+                          type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                replicas:
+                  type: integer
+                message:
+                  type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image
+        - name: Replicas
+          type: integer
+          jsonPath: .spec.replicas
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

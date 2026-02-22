@@ -1,0 +1,174 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: mediaapiservices.apps.example.com
+spec:
+  group: apps.example.com
+  scope: Namespaced
+  names:
+    plural: mediaapiservices
+    singular: mediaapiservice
+    kind: MediaApiService
+    listKind: MediaApiServiceList
+    shortNames:
+      - mediaapi
+      - masvc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  default: media-api
+                  description: "Name of the media API service (Media bounded context)"
+                image:
+                  type: string
+                  description: "Container image (e.g., media-api:v1.0.0)"
+                replicas:
+                  type: integer
+                  default: 1
+                  minimum: 1
+                port:
+                  type: integer
+                  default: 3003
+                serviceType:
+                  type: string
+                  enum: ["ClusterIP", "NodePort", "LoadBalancer"]
+                  default: "NodePort"
+                nodePort:
+                  type: integer
+                  minimum: 30000
+                  maximum: 32767
+                # PostgreSQL for Asset metadata storage
+                postgres:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: true
+                    image:
+                      type: string
+                      default: "postgres:15-alpine"
+                    database:
+                      type: string
+                      default: "media"
+                    user:
+                      type: string
+                      default: "media"
+                    password:
+                      type: string
+                      default: "media123"
+                    storageSize:
+                      type: string
+                      default: "2Gi"
+                # S3/MinIO configuration for media storage
+                s3:
+                  type: object
+                  properties:
+                    bucket:
+                      type: string
+                      default: "media-assets"
+                    region:
+                      type: string
+                      default: "us-east-1"
+                    endpoint:
+                      type: string
+                      description: "S3 endpoint URL (for MinIO or localstack)"
+                    accessKeyId:
+                      type: string
+                      default: "minioadmin"
+                    secretAccessKey:
+                      type: string
+                      default: "minioadmin"
+                    forcePathStyle:
+                      type: boolean
+                      default: true
+                # Kafka configuration for event-driven architecture
+                kafka:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    brokers:
+                      type: array
+                      items:
+                        type: string
+                      description: "Kafka bootstrap servers"
+                    clientId:
+                      type: string
+                      default: "media-api"
+                    consumerGroupId:
+                      type: string
+                      default: "media-api-group"
+                    topics:
+                      type: object
+                      properties:
+                        mediaAssetEvents:
+                          type: string
+                          default: "media.asset.events"
+                        mediaAssetCommands:
+                          type: string
+                          default: "media.asset.commands"
+                        mediaProcessingStatus:
+                          type: string
+                          default: "media.asset.processing.status"
+                        mediaImageProcessing:
+                          type: string
+                          default: "media.image.processing"
+                        mediaVideoProcessing:
+                          type: string
+                          default: "media.video.processing"
+                        mediaAudioProcessing:
+                          type: string
+                          default: "media.audio.processing"
+                        mediaDocumentProcessing:
+                          type: string
+                          default: "media.document.processing"
+                        mediaArchiveProcessing:
+                          type: string
+                          default: "media.archive.processing"
+                    eventHandlers:
+                      type: string
+                      description: "JSON mapping of topic+eventType to use case names"
+                # CORS
+                cors:
+                  type: object
+                  properties:
+                    origin:
+                      type: string
+                      default: "*"
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image

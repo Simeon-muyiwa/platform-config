@@ -11,6 +11,14 @@ resources:
   - crds/apps.example.com_frontends.yaml
   - crds/apps.example.com_webapps.yaml
   - crds/apps.example.com_kafkaclusters.yaml
+  # Media processing service CRDs
+  - crds/apps.example.com_mediaapiservices.yaml
+  - crds/apps.example.com_imageworkers.yaml
+  - crds/apps.example.com_videoworkers.yaml
+  - crds/apps.example.com_audioworkers.yaml
+  - crds/apps.example.com_documentworkers.yaml
+  - crds/apps.example.com_archiveworkers.yaml
+  - crds/apps.example.com_uploadservices.yaml
   # Operator deployment
   - namespace.yaml
   - service-account.yaml

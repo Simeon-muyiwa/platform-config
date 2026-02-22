@@ -1,0 +1,129 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: audioworkers.apps.example.com
+spec:
+  group: apps.example.com
+  scope: Namespaced
+  names:
+    plural: audioworkers
+    singular: audioworker
+    kind: AudioWorker
+    listKind: AudioWorkerList
+    shortNames:
+      - audw
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required:
+                - image
+              properties:
+                serviceName:
+                  type: string
+                  default: audio-worker
+                  description: "Name of the audio processing worker"
+                image:
+                  type: string
+                  description: "Container image (e.g., audio-worker:v1.0.0)"
+                replicas:
+                  type: integer
+                  default: 1
+                  minimum: 1
+                port:
+                  type: integer
+                  default: 3006
+                serviceType:
+                  type: string
+                  enum: ["ClusterIP", "NodePort", "LoadBalancer"]
+                  default: "NodePort"
+                nodePort:
+                  type: integer
+                  minimum: 30000
+                  maximum: 32767
+                # S3/MinIO configuration for media storage
+                s3:
+                  type: object
+                  properties:
+                    bucket:
+                      type: string
+                      default: "media-assets"
+                    region:
+                      type: string
+                      default: "us-east-1"
+                    endpoint:
+                      type: string
+                      description: "S3 endpoint URL (for MinIO or localstack)"
+                    accessKeyId:
+                      type: string
+                      default: "minioadmin"
+                    secretAccessKey:
+                      type: string
+                      default: "minioadmin"
+                    forcePathStyle:
+                      type: boolean
+                      default: true
+                # Kafka configuration for event-driven architecture
+                kafka:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      default: false
+                    brokers:
+                      type: array
+                      items:
+                        type: string
+                      description: "Kafka bootstrap servers"
+                    clientId:
+                      type: string
+                      default: "audio-worker"
+                    consumerGroupId:
+                      type: string
+                      default: "audio-worker-group"
+                    topics:
+                      type: object
+                      properties:
+                        mediaAudioProcessing:
+                          type: string
+                          default: "media.audio.processing"
+                        mediaAssetEvents:
+                          type: string
+                          default: "media.asset.events"
+                        mediaProcessingStatus:
+                          type: string
+                          default: "media.asset.processing.status"
+                    eventHandlers:
+                      type: string
+                      description: "JSON mapping of topic+eventType to use case names"
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                      lastTransitionTime:
+                        type: string
+                      reason:
+                        type: string
+                      message:
+                        type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Image
+          type: string
+          jsonPath: .spec.image
