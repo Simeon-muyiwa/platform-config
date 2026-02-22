@@ -42,13 +42,13 @@ configMapGenerator:
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v16-5309900
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v16-5309900
       - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v15-a0a813c
-      - media-api=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v3-60f6f55
+      - media-api=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v18-hotfix
       - image-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/image-worker:v16-5309900
       - video-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v16-5309900
       - audio-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/audio-worker:v16-5309900
       - document-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/document-worker:v16-5309900
       - archive-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/archive-worker:v16-5309900
-      - upload-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v17-hotfix
+      - upload-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v26-twfix
 
 # ─── Replacements: ConfigMap literals → CRD spec.image ─────────────────────
 # Each replacement sources a value from the service-images ConfigMap and injects
