@@ -8,4 +8,4 @@ resources:
 # The kustomize images transformer works on standard Deployments
 images:
 - name: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/webapp-operator
-  newTag: v12-cac57d4
+  newTag: v13-6e83cf9
