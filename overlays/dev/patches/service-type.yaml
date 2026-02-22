@@ -9,14 +9,6 @@ spec:
   nodePort: 30083
 ---
 apiVersion: apps.example.com/v1alpha1
-kind: AuthService
-metadata:
-  name: auth-service
-spec:
-  serviceType: NodePort
-  nodePort: 30081
----
-apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
@@ -39,3 +31,60 @@ metadata:
   name: auth-frontend
 spec:
   nodePort: 30082
+---
+# Media Processing Platform services
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
+spec:
+  serviceType: NodePort
+  nodePort: 30086
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ImageWorker
+metadata:
+  name: image-worker
+spec:
+  serviceType: NodePort
+  nodePort: 30087
+---
+apiVersion: apps.example.com/v1alpha1
+kind: VideoWorker
+metadata:
+  name: video-worker
+spec:
+  serviceType: NodePort
+  nodePort: 30088
+---
+apiVersion: apps.example.com/v1alpha1
+kind: AudioWorker
+metadata:
+  name: audio-worker
+spec:
+  serviceType: NodePort
+  nodePort: 30089
+---
+apiVersion: apps.example.com/v1alpha1
+kind: DocumentWorker
+metadata:
+  name: document-worker
+spec:
+  serviceType: NodePort
+  nodePort: 30090
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ArchiveWorker
+metadata:
+  name: archive-worker
+spec:
+  serviceType: NodePort
+  nodePort: 30091
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
+spec:
+  serviceType: NodePort
+  nodePort: 30092

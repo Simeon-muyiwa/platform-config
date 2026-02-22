@@ -5,10 +5,16 @@ namespace: default
 
 resources:
   - ../../base/identity-service
-  - ../../base/auth-service
   - ../../base/user-service
   - ../../base/blog-service
   - ../../base/frontend
+  - ../../base/media-api
+  - ../../base/image-worker
+  - ../../base/video-worker
+  - ../../base/audio-worker
+  - ../../base/document-worker
+  - ../../base/archive-worker
+  - ../../base/upload-service
 
 # NOTE: Kustomize `images` transformer does NOT work on CRD custom fields
 # (spec.image). We use strategic merge patches instead — see patches/images-dev.yaml
@@ -18,7 +24,7 @@ patches:
   - path: patches/images-dev.yaml     # Override spec.image → local minikube tags
   - path: patches/service-type.yaml   # ClusterIP → NodePort for minikube access
   - path: patches/replicas.yaml       # Single replica per service
-  - path: patches/resources.yaml      # Minimal resource requests/limits (AuthService, Frontend only)
+  - path: patches/resources.yaml      # Minimal resource requests/limits (Frontend only)
   - path: patches/postgres-dev.yaml   # Dev postgres credentials + image + storageSize
 
 # ConfigMap for development rules

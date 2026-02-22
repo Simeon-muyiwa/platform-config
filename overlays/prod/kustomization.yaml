@@ -5,10 +5,16 @@ namespace: default
 
 resources:
   - ../../base/identity-service
-  - ../../base/auth-service
   - ../../base/user-service
   - ../../base/blog-service
   - ../../base/frontend
+  - ../../base/media-api
+  - ../../base/image-worker
+  - ../../base/video-worker
+  - ../../base/audio-worker
+  - ../../base/document-worker
+  - ../../base/archive-worker
+  - ../../base/upload-service
 
 # Production patches (HA replicas + resource limits)
 patches:
@@ -33,10 +39,16 @@ configMapGenerator:
   - name: service-images
     literals:
       - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v15-a0a813c
-      - auth-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v15-a0a813c
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v15-a0a813c
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v15-a0a813c
       - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v15-a0a813c
+      - media-api=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v1-initial
+      - image-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/image-worker:v1-initial
+      - video-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v1-initial
+      - audio-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/audio-worker:v1-initial
+      - document-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/document-worker:v1-initial
+      - archive-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/archive-worker:v1-initial
+      - upload-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v1-initial
 
 # ─── Replacements: ConfigMap literals → CRD spec.image ─────────────────────
 # Each replacement sources a value from the service-images ConfigMap and injects
@@ -51,16 +63,6 @@ replacements:
       - select:
           kind: IdentityService
           name: identity-service
-        fieldPaths:
-          - spec.image
-  - source:
-      kind: ConfigMap
-      name: service-images
-      fieldPath: data.auth-service
-    targets:
-      - select:
-          kind: AuthService
-          name: auth-service
         fieldPaths:
           - spec.image
   - source:
@@ -91,6 +93,76 @@ replacements:
       - select:
           kind: Frontend
           name: auth-frontend
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.media-api
+    targets:
+      - select:
+          kind: MediaApiService
+          name: media-api
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.image-worker
+    targets:
+      - select:
+          kind: ImageWorker
+          name: image-worker
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.video-worker
+    targets:
+      - select:
+          kind: VideoWorker
+          name: video-worker
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.audio-worker
+    targets:
+      - select:
+          kind: AudioWorker
+          name: audio-worker
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.document-worker
+    targets:
+      - select:
+          kind: DocumentWorker
+          name: document-worker
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.archive-worker
+    targets:
+      - select:
+          kind: ArchiveWorker
+          name: archive-worker
+        fieldPaths:
+          - spec.image
+  - source:
+      kind: ConfigMap
+      name: service-images
+      fieldPath: data.upload-service
+    targets:
+      - select:
+          kind: UploadService
+          name: upload-service
         fieldPaths:
           - spec.image
 

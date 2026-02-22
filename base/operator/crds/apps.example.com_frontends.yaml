@@ -45,7 +45,7 @@ spec:
                   description: NodePort for external access
                 authApiUrl:
                   type: string
-                  description: URL of the auth-service API
+                  description: URL of the identity-service API
                 resources:
                   type: object
                   properties:

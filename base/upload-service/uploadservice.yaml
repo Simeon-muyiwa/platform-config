@@ -1,0 +1,36 @@
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
+spec:
+  serviceName: upload-service
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v1-initial
+  replicas: 1
+  port: 3000
+  serviceType: ClusterIP
+
+  # PostgreSQL configuration
+  postgres:
+    database: upload_service
+    user: upload_user
+    password: change-in-production
+
+  # S3 configuration
+  s3:
+    bucket: "platform-uploads"
+    region: "eu-west-2"
+    uploadPrefix: "uploads/"
+    accessKeyId: "change-in-production"
+    secretAccessKey: "change-in-production"
+    forcePathStyle: false
+
+  # Auth configuration (shared JWT secret with identity-service)
+  auth:
+    secret: "change-in-production"
+    nextauthUrl: "https://upload.example.com"
+
+  # Media processing API
+  processingApiUrl: "http://media-api:3003"
+
+  # CORS
+  allowedOrigin: "*"

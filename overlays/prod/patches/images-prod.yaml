@@ -10,13 +10,6 @@ spec:
   image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v11-4430180
 ---
 apiVersion: apps.example.com/v1alpha1
-kind: AuthService
-metadata:
-  name: auth-service
-spec:
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/auth-service:v11-4430180
----
-apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service

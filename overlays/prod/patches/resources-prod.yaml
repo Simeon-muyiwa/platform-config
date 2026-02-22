@@ -1,11 +1,25 @@
 # Production: Full resources
-# NOTE: Only AuthService and Frontend CRDs have a resources field.
+# NOTE: Only Frontend CRD has a resources field.
 # IdentityService, UserService, BlogService CRDs do not support spec.resources.
 # TODO: Add resources field to remaining CRDs in the operator
 apiVersion: apps.example.com/v1alpha1
-kind: AuthService
+kind: Frontend
 metadata:
-  name: auth-service
+  name: auth-frontend
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+# Phase 5: Media Processing Platform
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
 spec:
   resources:
     requests:
@@ -16,9 +30,74 @@ spec:
       cpu: "500m"
 ---
 apiVersion: apps.example.com/v1alpha1
-kind: Frontend
+kind: ImageWorker
 metadata:
-  name: auth-frontend
+  name: image-worker
+spec:
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: VideoWorker
+metadata:
+  name: video-worker
+spec:
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: AudioWorker
+metadata:
+  name: audio-worker
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: DocumentWorker
+metadata:
+  name: document-worker
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ArchiveWorker
+metadata:
+  name: archive-worker
+spec:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
 spec:
   resources:
     requests:

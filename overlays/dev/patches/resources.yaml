@@ -1,19 +1,6 @@
 # Development: Minimal resources
-# NOTE: Only AuthService and Frontend CRDs have a resources field.
+# NOTE: Only Frontend CRD has a resources field.
 # IdentityService, UserService, BlogService CRDs do not support spec.resources.
-apiVersion: apps.example.com/v1alpha1
-kind: AuthService
-metadata:
-  name: auth-service
-spec:
-  resources:
-    requests:
-      memory: "128Mi"
-      cpu: "50m"
-    limits:
-      memory: "256Mi"
-      cpu: "200m"
----
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:

@@ -29,3 +29,36 @@ spec:
     password: blogservice123
     image: postgres:15-alpine
     storageSize: 1Gi
+---
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
+spec:
+  postgres:
+    password: media123
+    image: postgres:15-alpine
+    storageSize: 2Gi
+  s3:
+    endpoint: "http://minio:9000"
+    accessKeyId: minioadmin
+    secretAccessKey: minioadmin
+    forcePathStyle: true
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
+spec:
+  postgres:
+    password: upload_password
+    image: postgres:15-alpine
+    storageSize: 2Gi
+  s3:
+    endpoint: "http://minio:9000"
+    accessKeyId: minioadmin
+    secretAccessKey: minioadmin
+    forcePathStyle: true
+  auth:
+    secret: dev-jwt-secret
+    nextauthUrl: "http://localhost:30092"

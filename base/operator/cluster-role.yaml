@@ -64,9 +64,6 @@ rules:
       - webapps
       - webapps/status
       - webapps/finalizers
-      - authservices
-      - authservices/status
-      - authservices/finalizers
       - frontends
       - frontends/status
       - frontends/finalizers

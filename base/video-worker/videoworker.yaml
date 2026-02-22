@@ -1,0 +1,29 @@
+apiVersion: apps.example.com/v1alpha1
+kind: VideoWorker
+metadata:
+  name: video-worker
+spec:
+  serviceName: video-worker
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v1-initial
+  replicas: 1
+  port: 3005
+  serviceType: ClusterIP
+
+  # S3 configuration
+  s3:
+    bucket: "media-assets"
+    region: "eu-west-2"
+    accessKeyId: "change-in-production"
+    secretAccessKey: "change-in-production"
+    forcePathStyle: false
+
+  # Kafka configuration
+  kafka:
+    enabled: true
+    brokers:
+      - "platform-kafka-kafka-bootstrap.kafka:9092"
+    consumerGroupId: "video-worker-group"
+    topics:
+      mediaVideoProcessing: "media.video.processing"
+      mediaAssetEvents: "media.asset.events"
+      mediaProcessingStatus: "media.asset.processing.status"

@@ -9,13 +9,6 @@ spec:
   image: identity-service:v1.0.5
 ---
 apiVersion: apps.example.com/v1alpha1
-kind: AuthService
-metadata:
-  name: auth-service
-spec:
-  image: auth-service:v1.0.0
----
-apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
@@ -35,3 +28,52 @@ metadata:
   name: auth-frontend
 spec:
   image: frontend:v1.0.2
+---
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
+spec:
+  image: media-api:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ImageWorker
+metadata:
+  name: image-worker
+spec:
+  image: image-worker:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: VideoWorker
+metadata:
+  name: video-worker
+spec:
+  image: video-worker:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: AudioWorker
+metadata:
+  name: audio-worker
+spec:
+  image: audio-worker:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: DocumentWorker
+metadata:
+  name: document-worker
+spec:
+  image: document-worker:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ArchiveWorker
+metadata:
+  name: archive-worker
+spec:
+  image: archive-worker:v1.0.0
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
+spec:
+  image: upload-service:v1.0.0

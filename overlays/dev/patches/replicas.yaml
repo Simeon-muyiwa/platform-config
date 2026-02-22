@@ -7,13 +7,6 @@ spec:
   replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
-kind: AuthService
-metadata:
-  name: auth-service
-spec:
-  replicas: 1
----
-apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
@@ -31,5 +24,54 @@ apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:
   name: auth-frontend
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ImageWorker
+metadata:
+  name: image-worker
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: VideoWorker
+metadata:
+  name: video-worker
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: AudioWorker
+metadata:
+  name: audio-worker
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: DocumentWorker
+metadata:
+  name: document-worker
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: ArchiveWorker
+metadata:
+  name: archive-worker
+spec:
+  replicas: 1
+---
+apiVersion: apps.example.com/v1alpha1
+kind: UploadService
+metadata:
+  name: upload-service
 spec:
   replicas: 1

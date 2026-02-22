@@ -1,0 +1,41 @@
+apiVersion: apps.example.com/v1alpha1
+kind: MediaApiService
+metadata:
+  name: media-api
+spec:
+  serviceName: media-api
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v1-initial
+  replicas: 1
+  port: 3003
+  serviceType: ClusterIP
+
+  # PostgreSQL configuration
+  postgres:
+    enabled: true
+    database: media
+    user: mediaservice
+    password: change-in-production
+
+  # S3 configuration
+  s3:
+    bucket: "media-assets"
+    region: "eu-west-2"
+    accessKeyId: "change-in-production"
+    secretAccessKey: "change-in-production"
+    forcePathStyle: false
+
+  # Kafka configuration
+  kafka:
+    enabled: true
+    brokers:
+      - "platform-kafka-kafka-bootstrap.kafka:9092"
+    consumerGroupId: "media-api-group"
+    topics:
+      mediaAssetEvents: "media.asset.events"
+      mediaAssetCommands: "media.asset.commands"
+      mediaProcessingStatus: "media.asset.processing.status"
+      mediaImageProcessing: "media.image.processing"
+      mediaVideoProcessing: "media.video.processing"
+      mediaAudioProcessing: "media.audio.processing"
+      mediaDocumentProcessing: "media.document.processing"
+      mediaArchiveProcessing: "media.archive.processing"

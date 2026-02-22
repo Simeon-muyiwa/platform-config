@@ -8,14 +8,16 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-    cert-manager.io/cluster-issuer: "letsencrypt-dns-prod"
+    # TLS secret is reflected from cert-manager/platform-wildcard-certificate
+    # by emberstack reflector — no separate cert-manager issuer needed.
+    # This prevents Let's Encrypt rate limiting on teardown/rebuild cycles.
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
     - healthxcape.com
     - www.healthxcape.com
-    secretName: frontend-tls-prod
+    secretName: platform-wildcard-certificate
   rules:
   - host: healthxcape.com
     http:
@@ -49,14 +51,14 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
-    cert-manager.io/cluster-issuer: "letsencrypt-dns-prod"
+    # TLS secret reflected from cert-manager/platform-wildcard-certificate
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
     - healthxcape.com
     - www.healthxcape.com
-    secretName: frontend-tls-prod
+    secretName: platform-wildcard-certificate
   rules:
   - host: healthxcape.com
     http:
