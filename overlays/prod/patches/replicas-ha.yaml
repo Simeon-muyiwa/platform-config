@@ -1,31 +1,32 @@
-# Production: High availability replicas
+# Production: Single replica (t3.large cluster — 2 vCPU per node)
+# Scale up when cluster capacity increases
 apiVersion: apps.example.com/v1alpha1
 kind: IdentityService
 metadata:
   name: identity-service
 spec:
-  replicas: 3
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: UserService
 metadata:
   name: user-service
 spec:
-  replicas: 3
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: BlogService
 metadata:
   name: blog-service
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  replicas: 3
+  replicas: 1
 ---
 # Phase 5: Media Processing Platform
 apiVersion: apps.example.com/v1alpha1
@@ -33,42 +34,42 @@ kind: MediaApiService
 metadata:
   name: media-api
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: ImageWorker
 metadata:
   name: image-worker
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: VideoWorker
 metadata:
   name: video-worker
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: AudioWorker
 metadata:
   name: audio-worker
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: DocumentWorker
 metadata:
   name: document-worker
 spec:
-  replicas: 2
+  replicas: 1
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: ArchiveWorker
 metadata:
   name: archive-worker
 spec:
-  replicas: 2
+  replicas: 1
 ---
 # Upload Service
 apiVersion: apps.example.com/v1alpha1
@@ -76,4 +77,4 @@ kind: UploadService
 metadata:
   name: upload-service
 spec:
-  replicas: 2
+  replicas: 1

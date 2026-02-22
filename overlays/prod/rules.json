@@ -85,26 +85,26 @@
   },
   "scaling": {
     "identity-service": {
-      "minReplicas": 3,
-      "maxReplicas": 10,
+      "minReplicas": 1,
+      "maxReplicas": 3,
       "targetCPU": 70,
       "scaleDownStabilization": "300s"
     },
     "user-service": {
-      "minReplicas": 3,
-      "maxReplicas": 8,
+      "minReplicas": 1,
+      "maxReplicas": 3,
       "targetCPU": 70,
       "scaleDownStabilization": "300s"
     },
     "blog-service": {
-      "minReplicas": 2,
-      "maxReplicas": 6,
+      "minReplicas": 1,
+      "maxReplicas": 3,
       "targetCPU": 70,
       "scaleDownStabilization": "300s"
     },
     "frontend": {
-      "minReplicas": 3,
-      "maxReplicas": 10,
+      "minReplicas": 1,
+      "maxReplicas": 3,
       "targetCPU": 60,
       "scaleDownStabilization": "300s"
     }
