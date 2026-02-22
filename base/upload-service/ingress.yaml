@@ -1,0 +1,44 @@
+---
+# Upload service ingress — routes /upload/* to the upload-service
+# Rewrites /upload/(..) → /(..) before forwarding to the Next.js app
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: upload-service-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/proxy-body-size: "500m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    # TLS secret reflected from cert-manager/platform-wildcard-certificate
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - healthxcape.com
+    - www.healthxcape.com
+    secretName: platform-wildcard-certificate
+  rules:
+  - host: healthxcape.com
+    http:
+      paths:
+      - path: /upload/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: upload-service
+            port:
+              number: 3000
+  - host: www.healthxcape.com
+    http:
+      paths:
+      - path: /upload/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: upload-service
+            port:
+              number: 3000
