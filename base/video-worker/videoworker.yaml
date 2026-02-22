@@ -4,7 +4,7 @@ metadata:
   name: video-worker
 spec:
   serviceName: video-worker
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v1-initial
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v16-5309900
   replicas: 1
   port: 3005
   serviceType: ClusterIP

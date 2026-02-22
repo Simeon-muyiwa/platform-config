@@ -4,7 +4,7 @@ metadata:
   name: archive-worker
 spec:
   serviceName: archive-worker
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/archive-worker:v1-initial
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/archive-worker:v16-5309900
   replicas: 1
   port: 3008
   serviceType: ClusterIP

@@ -4,7 +4,7 @@ metadata:
   name: upload-service
 spec:
   serviceName: upload-service
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v1-initial
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v16-5309900
   replicas: 1
   port: 3000
   serviceType: ClusterIP

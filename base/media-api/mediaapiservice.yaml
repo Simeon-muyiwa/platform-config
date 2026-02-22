@@ -4,7 +4,7 @@ metadata:
   name: media-api
 spec:
   serviceName: media-api
-  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v1-initial
+  image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v16-5309900
   replicas: 1
   port: 3003
   serviceType: ClusterIP
