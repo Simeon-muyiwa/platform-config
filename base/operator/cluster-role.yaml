@@ -79,6 +79,28 @@ rules:
       - kafkaclusters
       - kafkaclusters/status
       - kafkaclusters/finalizers
+      # Media processing services
+      - mediaapiservices
+      - mediaapiservices/status
+      - mediaapiservices/finalizers
+      - imageworkers
+      - imageworkers/status
+      - imageworkers/finalizers
+      - videoworkers
+      - videoworkers/status
+      - videoworkers/finalizers
+      - audioworkers
+      - audioworkers/status
+      - audioworkers/finalizers
+      - documentworkers
+      - documentworkers/status
+      - documentworkers/finalizers
+      - archiveworkers
+      - archiveworkers/status
+      - archiveworkers/finalizers
+      - uploadservices
+      - uploadservices/status
+      - uploadservices/finalizers
     verbs:
       - create
       - delete
