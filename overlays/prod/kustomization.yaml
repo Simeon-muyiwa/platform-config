@@ -45,7 +45,7 @@ configMapGenerator:
       - media-api=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v1-initial
       - image-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/image-worker:v1-initial
       - video-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v1-initial
-      - audio-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/audio-worker:v1-initial
+      - audio-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/audio-worker:v1-5309900
       - document-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/document-worker:v1-initial
       - archive-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/archive-worker:v1-initial
       - upload-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/upload-service:v1-initial
