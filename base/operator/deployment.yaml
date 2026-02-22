@@ -36,21 +36,25 @@ spec:
               value: explicit
           resources:
             limits:
-              cpu: 500m
-              memory: 768Mi
+              cpu: "1"
+              memory: 1Gi
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 200m
+              memory: 512Mi
           livenessProbe:
             httpGet:
               path: /healthz
               port: 6789
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
           readinessProbe:
             httpGet:
               path: /readyz
               port: 6789
-            initialDelaySeconds: 5
-            periodSeconds: 10
-      terminationGracePeriodSeconds: 10
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+      terminationGracePeriodSeconds: 30
