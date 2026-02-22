@@ -48,7 +48,7 @@ spec:
               cpu: "50m"
       containers:
         - name: coordinator
-          image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/gitops-coordinator:v15-a0a813c
+          image: 939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/gitops-coordinator:v16-5309900
           ports:
             - containerPort: 8000
               name: http
