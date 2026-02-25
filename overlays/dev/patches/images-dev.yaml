@@ -27,7 +27,7 @@ kind: Frontend
 metadata:
   name: auth-frontend
 spec:
-  image: frontend:v1.0.2
+  image: frontend-app:v1.0.2
 ---
 apiVersion: apps.example.com/v1alpha1
 kind: MediaApiService
