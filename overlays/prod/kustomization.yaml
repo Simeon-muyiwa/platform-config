@@ -41,7 +41,7 @@ configMapGenerator:
       - identity-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/identity-service:v20-77ebed8
       - user-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/user-service:v20-77ebed8
       - blog-service=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/blog-service:v20-77ebed8
-      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v20-77ebed8
+      - frontend=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/frontend:v9-0b859a0
       - media-api=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/media-api:v20-77ebed8
       - image-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/image-worker:v20-77ebed8
       - video-worker=939217651725.dkr.ecr.eu-west-2.amazonaws.com/kubeadm_ec2_cluster/video-worker:v20-77ebed8
